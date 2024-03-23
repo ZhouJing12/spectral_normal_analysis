@@ -1,0 +1,53 @@
+!def int n
+!def double y_avg diff std
+!file in 1_extracted.jcmt
+!find
+!for i 1 to found
+!    get idx%num[i]
+!    let n R%HEAD%SPE%NCHAN
+!    def double tmp_arr['n-1']
+!    let tmp_arr (ry[2:]-ry[:'n-1'])^2
+!    compute diff mean tmp_arr
+!    compute y_avg mean ry
+!    compute std rms ry
+!    say 'std' 'diff'
+!    pl
+!    pause
+!    Del /var tmp_arr
+!next
+
+def int n h
+def double y_avg Sigma2 Q Q_s Q_lim
+let Q_lim 422.6249   ! Chi2(0.05,472)=422.6249, depend on h (limit of delay K)
+file in &1_2_droped.jcmt
+find
+sic dele &1_LBQ.txt
+sic output &1_LBQ.txt
+for i 1 to found
+   get idx%num[i]
+   let n R%HEAD%SPE%NCHAN
+   let h n/2-1
+   def double dela_corr['h'] tot_arr['n']
+   compute y_avg mean ry
+   let tot_arr (ry-y_avg)^2
+   compute Sigma2 sum tot_arr
+
+   for k 1 to h
+       def double tmp_arr['n-k']
+       let tmp_arr (ry[:'n-k']-y_avg)*(ry['k+1':]-y_avg)/Sigma2
+       compute dela_corr['k'] sum tmp_arr
+       del /var tmp_arr
+       let dela_corr['k'] dela_corr['k']^2/(n-k)
+   next
+
+   compute Q_s sum dela_corr
+   let Q Q_s*n*(n+2)
+   say 'Q'
+!   if Q.gt.Q_lim then
+!     say "reject"
+!   else
+!     say "accept"
+!   endif
+   del /var dela_corr tot_arr
+next
+sic output

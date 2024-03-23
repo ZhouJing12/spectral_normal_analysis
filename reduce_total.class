@@ -1,0 +1,29 @@
+!def char*60 filenames[8]
+!accept filenames /column "HCO/filenames.txt"
+!sic delete total.jcmt
+!file out total.jcmt s
+!for i 1 to 8
+!  file in 'filenames[i]'
+!  find
+!  for j 1 to found
+!    get j
+!    write
+!  next
+!next
+
+@extract_edge.class total.jcmt
+@Jarque_Bera_test.class total.jcmt
+def int n1 n2
+def double flag_frac
+file in total.jcmt_1_extracted.jcmt
+find
+let n1 found
+file in total.jcmt_2_droped.jcmt
+find
+let n2 found
+let flag_frac 1-n2/n1
+
+@Ljung_Box_test.class total.jcmt
+@reduce_LBQ.class total.jcmt 'flag_frac'
+
+@map.class total.jcmt

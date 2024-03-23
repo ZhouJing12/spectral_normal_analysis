@@ -1,0 +1,12 @@
+file in &1
+find
+sic delete &1_1_extracted.jcmt
+file out &1_1_extracted.jcmt single
+get z
+for i 1 to found
+    get n
+    set unit c f
+    extract 50 974
+    write
+next
+

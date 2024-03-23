@@ -1,0 +1,64 @@
+def double y_avg Sigma2 Sigma3 Sigma4 J_S J_K JB JB_cta
+def int n
+
+let JB_cta 15                    !p-value=0.05
+                                   ! chi-square 2 (5.99) = 0.05, 4.61~0.1, 9.21 ~0.01,
+sic dele  &1_2_droped.jcmt
+file out &1_2_droped.jcmt single
+file in &1_1_extracted.jcmt
+find
+get f
+define double out[50,2]
+set unit v f
+
+for i 1 to found
+
+   cl
+   get idx%num[i]
+   !sm box 2
+  def double tmp_arr /like ry
+! -------------------------------
+   let n R%HEAD%SPE%NCHAN
+   compute y_avg mean ry
+   let tmp_arr (ry-y_avg)^2
+   compute Sigma2 mean tmp_arr
+   let tmp_arr (ry-y_avg)^3
+   compute Sigma3 mean tmp_arr
+   let tmp_arr (ry-y_avg)^4
+   compute Sigma4 mean tmp_arr
+
+   let J_S Sigma3/(Sigma2)^1.5          ! Skewness
+   let J_K Sigma4/(Sigma2)^2            ! Kurtosis
+   let JB J_S^2/6*n+(J_K-3)^2/24*n      ! Jarque-Bera analysis https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test
+      if JB.gt.JB_cta then
+          say "reject"
+      else
+          say "accept"
+          write
+      endif
+
+! -------------------------------
+
+   set mod x t
+   set mod y t
+   sm box 4
+   pl 
+   g\draw text 20 12  'JB'
+
+   get
+   !pause
+
+
+   comput out hist ry
+   cl
+   set mod x -2 2
+   set mod y -1 60
+   box
+   g\hist out[,2] out[,1]
+   g\draw text 20 12  'JB'
+   !pause
+
+
+Del /var tmp_arr
+
+next
