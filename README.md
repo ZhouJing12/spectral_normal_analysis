@@ -3,3 +3,5 @@ Applying Ljung Box and Jarque Bera algorithm to test goodness of matching a norm
 Ljung Box: https://en.wikipedia.org/wiki/Ljung%E2%80%93Box_test
 
 Jarque Bera: https://en.wikipedia.org/wiki/Jarque%E2%80%93Bera_test
+
+The example data can be downloaded from http://gofile.me/5iK1o/9o1nNvnkW
